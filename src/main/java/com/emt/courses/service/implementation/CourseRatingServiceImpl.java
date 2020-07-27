@@ -7,6 +7,7 @@ import com.emt.courses.service.CourseRatingService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseRatingServiceImpl implements CourseRatingService {
@@ -23,15 +24,22 @@ public class CourseRatingServiceImpl implements CourseRatingService {
     }
 
     @Override
-    public CourseRating getCourseRating(int ratingId) {
-        return ratingRepository.getOne(ratingId);
+    public Optional<CourseRating> getCourseRating(int ratingId) {
+        return ratingRepository.findById(ratingId);
     }
 
     @Override
     public CourseRating updateRating(CourseRating courseRating) {
-        CourseRating rating = getCourseRating(courseRating.getId());
-        rating.setRating(courseRating.getRating());
-        return ratingRepository.save(rating);
+
+        Optional<CourseRating> optionalCourseRating = getCourseRating(courseRating.getId());
+
+        if (optionalCourseRating.isPresent()) {
+            CourseRating rating = optionalCourseRating.get();
+            rating.setRating(courseRating.getRating());
+            return ratingRepository.save(rating);
+        }
+
+        return null;
     }
 
     @Override

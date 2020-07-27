@@ -9,8 +9,10 @@ import com.emt.courses.service.CourseVideoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value = "/api/courses")
 public class CourseController {
 
@@ -35,7 +37,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    Course getCourseDetails(@PathVariable Integer id) {
+    Optional<Course> getCourseDetails(@PathVariable Integer id) {
         return courseService.getCourse(id);
     }
 
@@ -52,6 +54,12 @@ public class CourseController {
     @PutMapping
     Course updateCategory(@RequestBody Course course) {
         return courseService.updateCourse(course);
+    }
+
+
+    @GetMapping("category/{categoryId}")
+    List<Course> getAllCoursesByCategory(@PathVariable Integer categoryId) {
+        return courseService.getAllCoursesByCategory(categoryId);
     }
 
     //videos
@@ -71,7 +79,7 @@ public class CourseController {
     }
 
     @GetMapping("{courseId}/videos/{videoId}")
-    CourseVideo getCourseVideo(@PathVariable Integer courseId, @PathVariable Integer videoId) {
+    Optional<CourseVideo> getCourseVideo(@PathVariable Integer courseId, @PathVariable Integer videoId) {
         return courseVideoService.getCourseVideo(videoId);
     }
 
@@ -102,7 +110,7 @@ public class CourseController {
     }
 
     @GetMapping("{courseId}/ratings/{ratingId}")
-    CourseRating getCourseRating(@PathVariable Integer courseId, @PathVariable Integer ratingId) {
+    Optional<CourseRating> getCourseRating(@PathVariable Integer courseId, @PathVariable Integer ratingId) {
         return courseRatingService.getCourseRating(ratingId);
     }
 }

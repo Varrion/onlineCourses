@@ -3,12 +3,13 @@ package com.emt.courses.service;
 import com.emt.courses.model.CourseVideo;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseVideoService {
 
     List<CourseVideo> getAllVideosByCourse(int courseId);
 
-    CourseVideo getCourseVideo(int videoId);
+    Optional<CourseVideo> getCourseVideo(int videoId);
 
     CourseVideo saveCourseVideo(CourseVideo courseVideo);
 

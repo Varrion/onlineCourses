@@ -6,6 +6,7 @@ import com.emt.courses.service.CourseVideoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseVideoServiceImpl implements CourseVideoService {
@@ -22,8 +23,8 @@ public class CourseVideoServiceImpl implements CourseVideoService {
     }
 
     @Override
-    public CourseVideo getCourseVideo(int videoId) {
-        return videoRepository.getOne(videoId);
+    public Optional<CourseVideo> getCourseVideo(int videoId) {
+        return videoRepository.findById(videoId);
     }
 
     @Override
@@ -33,10 +34,16 @@ public class CourseVideoServiceImpl implements CourseVideoService {
 
     @Override
     public CourseVideo updateCourseVideo(CourseVideo courseVideo) {
-        CourseVideo editedVideo = getCourseVideo(courseVideo.getId());
-        editedVideo.setTitle(courseVideo.getTitle());
+        Optional<CourseVideo> optionalCourseVideo = getCourseVideo(courseVideo.getId());
 
-        return saveCourseVideo(editedVideo);
+        if (optionalCourseVideo.isPresent()) {
+            CourseVideo editedVideo = optionalCourseVideo.get();
+            editedVideo.setTitle(courseVideo.getTitle());
+
+            return saveCourseVideo(editedVideo);
+        }
+
+        return null;
     }
 
     @Override

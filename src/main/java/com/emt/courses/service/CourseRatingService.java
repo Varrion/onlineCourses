@@ -3,12 +3,13 @@ package com.emt.courses.service;
 import com.emt.courses.model.CourseRating;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseRatingService {
 
     List<CourseRating> getAllCourseRatings(int courseId);
 
-    CourseRating getCourseRating(int ratingId);
+    Optional<CourseRating> getCourseRating(int ratingId);
 
     CourseRating updateRating (CourseRating courseRating);
 

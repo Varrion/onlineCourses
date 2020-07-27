@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -31,4 +32,7 @@ public class Customer {
 
     @OneToOne(mappedBy = "customer")
     ShoppingCart shoppingCart;
+
+    @ManyToMany
+    Set<Course> ownedCourses;
 }

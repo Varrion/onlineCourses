@@ -6,6 +6,7 @@ import com.emt.courses.service.CourseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -23,12 +24,17 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> getAllCoursesByInstructor(int instructorId) {
-        return courseRepository.getAllByInstructor(instructorId);
+        return courseRepository.getAllByInstructorId(instructorId);
     }
 
     @Override
-    public Course getCourse(int courseId) {
-        return courseRepository.getOne(courseId);
+    public List<Course> getAllCoursesByCategory(int categoryId) {
+        return courseRepository.getAllByCategoryId(categoryId);
+    }
+
+    @Override
+    public Optional<Course> getCourse(int courseId) {
+        return courseRepository.findById(courseId);
     }
 
     @Override
@@ -38,15 +44,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course updateCourse(Course course) {
-        Course updateCourse = getCourse(course.getId());
+        Optional<Course> optionalCourse = getCourse(course.getId());
 
-        updateCourse.setCategory(course.getCategory());
-        updateCourse.setDescription(course.getDescription());
-        updateCourse.setName(course.getName());
-        updateCourse.setIsFree(course.getIsFree());
-        updateCourse.setPrice(course.getPrice());
+        if (optionalCourse.isPresent()) {
+            Course updateCourse = optionalCourse.get();
+            updateCourse.setCategory(course.getCategory());
+            updateCourse.setDescription(course.getDescription());
+            updateCourse.setName(course.getName());
+            updateCourse.setIsFree(course.getIsFree());
+            updateCourse.setPrice(course.getPrice());
+            return saveCourse(updateCourse);
+        }
 
-        return saveCourse(updateCourse);
+        return null;
     }
 
     @Override

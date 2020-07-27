@@ -22,14 +22,17 @@ public class Course {
 
     Integer price;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     CourseCategory category;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     Customer instructor;
 
     @ManyToMany(mappedBy = "courses")
     Set<ShoppingCart> shoppingCarts;
 
     Boolean isFree;
+
+    @ManyToMany(mappedBy = "ownedCourses")
+    Set<Customer> customers;
 }

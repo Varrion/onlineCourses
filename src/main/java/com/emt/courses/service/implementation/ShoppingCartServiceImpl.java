@@ -4,8 +4,6 @@ import com.emt.courses.model.Course;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.ShoppingCart;
 import com.emt.courses.repository.ShoppingCartRepository;
-import com.emt.courses.service.CourseService;
-import com.emt.courses.service.CustomerService;
 import com.emt.courses.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +13,9 @@ import java.util.Set;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository cartRepository;
-    private final CustomerService customerService;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository cartRepository, CustomerService customerService, CourseService courseService) {
+    public ShoppingCartServiceImpl(ShoppingCartRepository cartRepository) {
         this.cartRepository = cartRepository;
-        this.customerService = customerService;
     }
 
     @Override
@@ -28,9 +24,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCart createEmptyShoppingCart(int customerId) {
+    public ShoppingCart createEmptyShoppingCart(Customer customer) {
         ShoppingCart shoppingCart = new ShoppingCart();
-        Customer customer = customerService.getCustomer(customerId);
         shoppingCart.setCustomer(customer);
 
         return cartRepository.save(shoppingCart);

@@ -5,12 +5,15 @@ import com.emt.courses.model.ShoppingCart;
 import com.emt.courses.model.Customer;
 import com.emt.courses.service.ShoppingCartService;
 import com.emt.courses.service.CustomerService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value = "/api/user")
 public class CustomerController {
 
@@ -23,12 +26,15 @@ public class CustomerController {
     }
 
     @GetMapping
-    List<Customer> getAllUsers() {
+    List<Customer> getAllUsers(@RequestParam(required = false) Boolean isInstructor) {
+        if (isInstructor != null) {
+            return customerService.getAllUsersByRole(isInstructor);
+        }
         return customerService.getAllCustomers();
     }
 
     @GetMapping("{id}")
-    Customer getUser(@PathVariable Integer id) {
+    Optional<Customer> getUser(@PathVariable Integer id) {
         return customerService.getCustomer(id);
     }
 
@@ -50,11 +56,6 @@ public class CustomerController {
     @GetMapping("{customerId}/cart")
     ShoppingCart getUserShoppingCart(@PathVariable Integer customerId) {
         return cartService.getUserShoppingCart(customerId);
-    }
-
-    @PostMapping("{customerId}/cart")
-    ShoppingCart createShoppingCart(@PathVariable Integer customerId) {
-        return cartService.createEmptyShoppingCart(customerId);
     }
 
     @PutMapping("{customerId}/cart")

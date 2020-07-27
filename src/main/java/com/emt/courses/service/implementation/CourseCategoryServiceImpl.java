@@ -6,6 +6,7 @@ import com.emt.courses.service.CourseCategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseCategoryServiceImpl implements CourseCategoryService {
@@ -22,8 +23,8 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
     }
 
     @Override
-    public CourseCategory getCategory(int categoryId) {
-        return categoryRepository.getOne(categoryId);
+    public Optional<CourseCategory> getCategory(int categoryId) {
+        return categoryRepository.findById(categoryId);
     }
 
     @Override
@@ -33,11 +34,18 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
 
     @Override
     public CourseCategory updateCategory(CourseCategory category) {
-        CourseCategory editedCategory = getCategory(category.getId());
-        editedCategory.setName(category.getName());
-        editedCategory.setDescription(category.getDescription());
 
-        return categoryRepository.save(editedCategory);
+        Optional<CourseCategory> optionalCourseCategory = getCategory(category.getId());
+
+        if (optionalCourseCategory.isPresent()) {
+            CourseCategory editedCategory = optionalCourseCategory.get();
+            editedCategory.setName(category.getName());
+            editedCategory.setDescription(category.getDescription());
+
+            return categoryRepository.save(editedCategory);
+        }
+
+        return null;
     }
 
     @Override

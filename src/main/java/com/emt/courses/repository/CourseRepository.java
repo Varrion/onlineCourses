@@ -11,5 +11,8 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Transactional
-    List<Course> getAllByInstructor(int instructorId);
+    List<Course> getAllByInstructorId(int instructorId);
+
+    @Transactional
+    List<Course> getAllByCategoryId(int categoryId);
 }

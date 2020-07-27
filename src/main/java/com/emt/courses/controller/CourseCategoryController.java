@@ -5,8 +5,10 @@ import com.emt.courses.service.CourseCategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value = "/api/category")
 public class CourseCategoryController {
 
@@ -22,7 +24,7 @@ public class CourseCategoryController {
     }
 
     @GetMapping(value = "{id}")
-    CourseCategory getCategoryDetails(@PathVariable Integer id) {
+    Optional<CourseCategory> getCategoryDetails(@PathVariable Integer id) {
         return categoryService.getCategory(id);
     }
 
