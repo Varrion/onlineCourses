@@ -26,7 +26,8 @@ public class Customer {
 
     String email;
 
-    String picture;
+    @Lob
+    byte[] picture;
 
     Boolean isInstructor;
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'video-react/dist/video-react.css';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CustomerLogin from "./pages/customer/CustomerLogin";

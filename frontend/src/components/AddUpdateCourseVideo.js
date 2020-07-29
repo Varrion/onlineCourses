@@ -12,48 +12,40 @@ function AddUpdateCourseVideo(props) {
     const initialCourseVideo = {
         title: '',
         video: null,
-        uploadedOn: Date.now(),
         length: '',
         course: {
             id: props.courseId
         },
     }
 
-    const [courseVideo, setCourseVideo] = useState(initialCourseVideo);
+    const [courseVideo, setCourseVideo] = useState(null);
 
     const handleChange = name => event => {
         setCourseVideo({...courseVideo, [name]: event.target.value});
     };
 
     const handleDrop = files => {
-        setCourseVideo({...courseVideo, video: files[0]})
 
-        let video = document.createElement('video');
-        video.preload = 'metadata';
-
-        video.onloadedmetadata = function() {
-            window.URL.revokeObjectURL(video.src);
-            let duration = video.duration;
-            console.log('test', duration)
-        }
-        video.src = URL.createObjectURL(files[0]);;
-        setVideoPreview(video);
-        console.log(video);
+        let file = files[0];
+        setCourseVideo(file);
     }
 
     const handleClearDropzone = event => {
         event.stopPropagation();
 
-        setCourseVideo({...courseVideo, video: null})
+        setCourseVideo(null)
     }
 
     const handleSubmit = event => {
         event.preventDefault();
 
-        axios.post(`courses/${props.courseId}/videos`, courseVideo)
+        const formData = new FormData();
+        formData.append("video", courseVideo);
+        console.log(formData);
+
+        axios.post(`courses/${props.courseId}/videos`, formData)
             .then(() => {
                 props.setShowModal(false);
-                setCourseVideo(initialCourseVideo);
             })
             .catch(err => console.log(err))
     }
@@ -71,13 +63,8 @@ function AddUpdateCourseVideo(props) {
                     Course Video
                 </Modal.Title>
             </Modal.Header>
+            <Form onSubmit={handleSubmit}>
             <Modal.Body>
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formCourseName">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control value={courseVideo.title} onChange={handleChange("title")} type="text"
-                                      placeholder="Video Title"/>
-                    </Form.Group>
 
                     <div className="row">
                         <div className="col-md-6">
@@ -86,8 +73,8 @@ function AddUpdateCourseVideo(props) {
                                     <section className="custom_dropzone">
                                         <div {...getRootProps()}>
                                             <input {...getInputProps()} />
-                                            {courseVideo.video ?
-                                                <div className="dropzone_text"><p>{courseVideo.video.path}</p>
+                                            {courseVideo ?
+                                                <div className="dropzone_text"><p>{courseVideo.path}</p>
                                                 <Button className="roundedButton" variant="danger" size="sm" onClick={handleClearDropzone}>X</Button>
                                                 </div> : <p>Drag & drop your video here </p>}
                                         </div>
@@ -96,13 +83,13 @@ function AddUpdateCourseVideo(props) {
                             </Dropzone>
                         </div>
                     </div>
-                </Form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
             </Modal.Footer>
+            </Form>
         </Modal>
     )
 }

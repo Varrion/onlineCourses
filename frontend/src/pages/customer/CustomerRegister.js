@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import axios from "./../../axiosConfig/axiosConfig"
 import {navigate} from "@reach/router";
+import Col from "react-bootstrap/Col";
 
 export default function CustomerRegister() {
 
@@ -37,26 +38,19 @@ export default function CustomerRegister() {
         <div className="text-left mt-4 offset-2 col-lg-8">
             <Jumbotron>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formUserFirstName">
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control value={user.firstName} onChange={handleChange("firstName")} type="text"
-                                      placeholder="Enter your first name"/>
-                    </Form.Group>
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="formUserFirstName">
+                            <Form.Label>First Name</Form.Label>
+                            <Form.Control value={user.firstName} onChange={handleChange("firstName")} type="text"
+                                          placeholder="Enter your first name"/>
+                        </Form.Group>
 
-                    <Form.Group controlId="formUserLastName">
-                        <Form.Label>Last Name</Form.Label>
-                        <Form.Control value={user.lastName} onChange={handleChange("lastName")} type="text"
-                                      placeholder="Enter your last name"/>
-                    </Form.Group>
-
-                    <Form.Group controlId="formUserEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control value={user.email} onChange={handleChange("email")} type="email"
-                                      placeholder="Enter your email address"/>
-                        <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text>
-                    </Form.Group>
+                        <Form.Group as={Col} controlId="formUserLastName">
+                            <Form.Label>Last Name</Form.Label>
+                            <Form.Control value={user.lastName} onChange={handleChange("lastName")} type="text"
+                                          placeholder="Enter your last name"/>
+                        </Form.Group>
+                    </Form.Row>
 
                     <Form.Group controlId="formUsername">
                         <Form.Label>Username</Form.Label>
@@ -70,9 +64,18 @@ export default function CustomerRegister() {
                                       placeholder="We recommend using strong password for your safety"/>
                     </Form.Group>
 
+                    <Form.Group controlId="formUserEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control value={user.email} onChange={handleChange("email")} type="email"
+                                      placeholder="Enter your email address"/>
+                        <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text>
+                    </Form.Group>
+
                     <Form.Group controlId="formCourseIsFree">
                         <Form.Check value={user.isInstructor} onChange={handleChange("isInstructor")} type="checkbox"
-                                    label="Is Course Free"/>
+                                    label="Instructor"/>
                     </Form.Group>
 
                     <Button variant="primary" type="submit">

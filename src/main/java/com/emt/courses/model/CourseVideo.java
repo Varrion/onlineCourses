@@ -18,12 +18,19 @@ public class CourseVideo {
 
     String title;
 
-    String video; // samoto video
+    String fileName;
 
     Date uploadedOn;
 
-    String length;
+    String fileType;
 
     @ManyToOne
     Course course;
+
+    public CourseVideo(String title, String fileType, String fileName, Date uploadedOn) {
+        this.title = title;
+        this.fileType = fileType;
+        this.fileName = fileName;
+        this.uploadedOn = uploadedOn;
+    }
 }
