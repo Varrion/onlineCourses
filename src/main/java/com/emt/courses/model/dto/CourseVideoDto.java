@@ -1,15 +1,8 @@
 package com.emt.courses.model.dto;
 
-import java.util.Date;
+import org.springframework.web.multipart.MultipartFile;
 
 public class CourseVideoDto {
-    String title;
-
-    String fileName;
-
-    Date uploadedOn;
-
-    String fileType;
-
-    Integer courseId;
+    public String title;
+    public MultipartFile file;
 }

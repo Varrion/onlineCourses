@@ -8,15 +8,18 @@ import Col from "react-bootstrap/Col";
 
 export default function CustomerRegister() {
 
-
-    const [user, setUser] = useState({
-        firstName: '',
-        lastName: '',
+    const initialUser = {
+        name: '',
+        surname: '',
         email: '',
         username: '',
         password: '',
         isInstructor: false
-    });
+    }
+
+    const [user, setUser] = useState(initialUser);
+
+    const [userPhoto, setUserPhoto] = useState(null);
 
     const handleChange = name => event => {
         if (name !== "isInstructor") {
@@ -26,10 +29,26 @@ export default function CustomerRegister() {
         }
     };
 
+    const handleDrop = event => {
+        let file = event.target.files[0];
+        setUserPhoto(file);
+    }
+
     const handleSubmit = event => {
         event.preventDefault();
-        axios.post("user", user)
-            .then(() => navigate("/"))
+
+        const formData = new FormData();
+        formData.append("userPhoto", userPhoto);
+        formData.append("userData", new Blob([JSON.stringify({...user})], {
+            type: "application/json"
+        }));
+
+        axios.post("user", formData)
+            .then(() => {
+                navigate("/");
+                setUserPhoto(null);
+                setUser(initialUser);
+            })
             .catch(err => console.log(err))
     };
 
@@ -41,13 +60,13 @@ export default function CustomerRegister() {
                     <Form.Row>
                         <Form.Group as={Col} controlId="formUserFirstName">
                             <Form.Label>First Name</Form.Label>
-                            <Form.Control value={user.firstName} onChange={handleChange("firstName")} type="text"
+                            <Form.Control value={user.name} onChange={handleChange("name")} type="text"
                                           placeholder="Enter your first name"/>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formUserLastName">
                             <Form.Label>Last Name</Form.Label>
-                            <Form.Control value={user.lastName} onChange={handleChange("lastName")} type="text"
+                            <Form.Control value={user.surname} onChange={handleChange("surname")} type="text"
                                           placeholder="Enter your last name"/>
                         </Form.Group>
                     </Form.Row>
@@ -76,6 +95,10 @@ export default function CustomerRegister() {
                     <Form.Group controlId="formCourseIsFree">
                         <Form.Check value={user.isInstructor} onChange={handleChange("isInstructor")} type="checkbox"
                                     label="Instructor"/>
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.File id="formCustomerPicture" onChange={handleDrop} label="Photo" />
                     </Form.Group>
 
                     <Button variant="primary" type="submit">

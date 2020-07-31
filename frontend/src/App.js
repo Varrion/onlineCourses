@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import './global.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'video-react/dist/video-react.css';
 import Header from "./components/Header";

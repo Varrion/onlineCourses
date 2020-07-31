@@ -2,6 +2,8 @@ html,
 body {
   height: 100%;
   font-family: sans-serif;
+  background-color: lightgray;
+
 }
 
 body {
@@ -23,6 +25,8 @@ code {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background-color: lightgray;
+
 }
 
 .footer {

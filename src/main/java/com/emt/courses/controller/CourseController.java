@@ -3,26 +3,14 @@ package com.emt.courses.controller;
 import com.emt.courses.model.Course;
 import com.emt.courses.model.CourseRating;
 import com.emt.courses.model.CourseVideo;
+import com.emt.courses.model.dto.CourseRatingDto;
 import com.emt.courses.service.CourseRatingService;
 import com.emt.courses.service.CourseService;
 import com.emt.courses.service.CourseVideoService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,13 +23,10 @@ public class CourseController {
     private final CourseVideoService courseVideoService;
     private final CourseRatingService courseRatingService;
 
-    private final ServletContext servletContext;
-
-    public CourseController(CourseService courseService, CourseVideoService courseVideoService, CourseRatingService courseRatingService, ServletContext servletContext) {
+    public CourseController(CourseService courseService, CourseVideoService courseVideoService, CourseRatingService courseRatingService) {
         this.courseService = courseService;
         this.courseVideoService = courseVideoService;
         this.courseRatingService = courseRatingService;
-        this.servletContext = servletContext;
     }
 
     @GetMapping
@@ -87,8 +72,10 @@ public class CourseController {
     }
 
     @PostMapping("{courseId}/videos")
-    CourseVideo addCourseVideo(@PathVariable Integer courseId, @RequestParam("video") MultipartFile video) throws FileUploadException {
-        return courseVideoService.saveCourseVideo(video, courseId);
+    CourseVideo addCourseVideo(@PathVariable Integer courseId,
+                               @RequestParam("video") MultipartFile video,
+                               @RequestParam("title") String title) throws FileUploadException {
+        return courseVideoService.saveCourseVideo(video, title, courseId);
     }
 
     @PutMapping("{courseId}/videos")
@@ -113,13 +100,13 @@ public class CourseController {
     }
 
     @PostMapping("{courseId}/ratings")
-    CourseRating postCourseRating(@PathVariable Integer courseId, @RequestBody CourseRating courseRating) {
-        return courseRatingService.saveRating(courseRating);
+    CourseRating postCourseRating(@PathVariable Integer courseId, @RequestBody CourseRatingDto courseRating) {
+        return courseRatingService.saveRating(courseRating, courseId);
     }
 
     @PutMapping("{courseId}/ratings")
-    CourseRating updateCourseRating(@PathVariable Integer courseId, @RequestBody CourseRating courseRating) {
-        return courseRatingService.updateRating(courseRating);
+    CourseRating updateCourseRating(@PathVariable Integer courseId, @RequestBody CourseRatingDto courseRatingDto) {
+        return courseRatingService.updateRating(courseRatingDto);
     }
 
     @DeleteMapping("{courseId}/ratings/{ratingId}")

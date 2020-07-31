@@ -19,5 +19,17 @@ public class CourseRating {
     @ManyToOne
     Course course;
 
+    @Enumerated(EnumType.ORDINAL)
     Rating rating;
+
+    String comment;
+
+    @OneToOne
+    Customer customer;
+
+    public CourseRating(Rating rating, String comment, Course course) {
+        this.rating = rating;
+        this.comment = comment;
+        this.course = course;
+    }
 }

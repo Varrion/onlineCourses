@@ -1,6 +1,7 @@
 package com.emt.courses.service;
 
 import com.emt.courses.model.CourseRating;
+import com.emt.courses.model.dto.CourseRatingDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +12,9 @@ public interface CourseRatingService {
 
     Optional<CourseRating> getCourseRating(int ratingId);
 
-    CourseRating updateRating (CourseRating courseRating);
+    CourseRating updateRating (CourseRatingDto courseRatingDto);
 
-    CourseRating saveRating (CourseRating courseRating);
+    CourseRating saveRating(CourseRatingDto courseRating, Integer courseId);
 
     void deleteRating(int ratingId);
 }

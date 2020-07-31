@@ -13,7 +13,7 @@ public interface CourseVideoService {
 
     Optional<CourseVideo> getCourseVideo(int videoId);
 
-    CourseVideo saveCourseVideo(MultipartFile file, int courseId) throws FileUploadException;
+    CourseVideo saveCourseVideo(MultipartFile file, String title, int courseId) throws FileUploadException;
 
     CourseVideo updateCourseVideo(CourseVideo courseVideo);
 

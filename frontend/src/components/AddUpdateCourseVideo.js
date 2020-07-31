@@ -1,51 +1,42 @@
-import React, {forwardRef, useImperativeHandle, useRef, useState} from "react";
+import React, {useState} from "react";
 import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "../axiosConfig/axiosConfig";
-import '../global.css';
 import Dropzone from "react-dropzone";
 
 function AddUpdateCourseVideo(props) {
-    const [videoPreview, setVideoPreview] = useState(null);
-
     const initialCourseVideo = {
         title: '',
         video: null,
-        length: '',
-        course: {
-            id: props.courseId
-        },
     }
-
-    const [courseVideo, setCourseVideo] = useState(null);
+    const [courseVideo, setCourseVideo] = useState(initialCourseVideo);
 
     const handleChange = name => event => {
         setCourseVideo({...courseVideo, [name]: event.target.value});
     };
 
     const handleDrop = files => {
-
         let file = files[0];
-        setCourseVideo(file);
+        setCourseVideo({...courseVideo, video: file});
     }
 
     const handleClearDropzone = event => {
         event.stopPropagation();
 
-        setCourseVideo(null)
+        setCourseVideo({...courseVideo, video: null})
     }
 
     const handleSubmit = event => {
         event.preventDefault();
 
         const formData = new FormData();
-        formData.append("video", courseVideo);
-        console.log(formData);
-
+        formData.append("video", courseVideo.video);
+        formData.append("title", courseVideo.title);
         axios.post(`courses/${props.courseId}/videos`, formData)
             .then(() => {
                 props.setShowModal(false);
+                setCourseVideo(initialCourseVideo);
             })
             .catch(err => console.log(err))
     }
@@ -64,18 +55,24 @@ function AddUpdateCourseVideo(props) {
                 </Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
-            <Modal.Body>
+                <Modal.Body>
+                    <Form.Group controlId="formCourseName">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control value={courseVideo.title} onChange={handleChange("title")} type="text"
+                                      placeholder="Video title"/>
+                    </Form.Group>
 
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                             <Dropzone onDrop={acceptedFiles => handleDrop(acceptedFiles)}>
                                 {({getRootProps, getInputProps}) => (
                                     <section className="custom_dropzone">
                                         <div {...getRootProps()}>
                                             <input {...getInputProps()} />
-                                            {courseVideo ?
-                                                <div className="dropzone_text"><p>{courseVideo.path}</p>
-                                                <Button className="roundedButton" variant="danger" size="sm" onClick={handleClearDropzone}>X</Button>
+                                            {courseVideo.video ?
+                                                <div className="dropzone_text"><p>{courseVideo.video.path}</p>
+                                                    <Button className="roundedButton" variant="danger" size="sm"
+                                                            onClick={handleClearDropzone}>X</Button>
                                                 </div> : <p>Drag & drop your video here </p>}
                                         </div>
                                     </section>
@@ -83,12 +80,12 @@ function AddUpdateCourseVideo(props) {
                             </Dropzone>
                         </div>
                     </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Modal.Footer>
             </Form>
         </Modal>
     )

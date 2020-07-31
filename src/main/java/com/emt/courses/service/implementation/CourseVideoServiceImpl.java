@@ -8,7 +8,6 @@ import com.emt.courses.service.CourseVideoService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,7 +43,7 @@ public class CourseVideoServiceImpl implements CourseVideoService {
     }
 
     @Override
-    public CourseVideo saveCourseVideo(MultipartFile file, int courseId) throws FileUploadException {
+    public CourseVideo saveCourseVideo(MultipartFile file, String title, int courseId) throws FileUploadException {
         String fileName = file.getOriginalFilename();
         Course course = courseService.getCourse(courseId).get();
 
@@ -56,7 +55,7 @@ public class CourseVideoServiceImpl implements CourseVideoService {
             Path path = Paths.get(UPLOADED_FOLDER + videoName);
             Files.write(path, bytes);
 
-            CourseVideo courseVideo = new CourseVideo(fileName, file.getContentType(), videoName, date);
+            CourseVideo courseVideo = new CourseVideo(title, file.getContentType(), videoName, date);
             courseVideo.setCourse(course);
             return videoRepository.save(courseVideo);
         } catch (IOException ex) {

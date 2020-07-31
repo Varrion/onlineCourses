@@ -36,4 +36,20 @@ public class Customer {
 
     @ManyToMany
     Set<Course> ownedCourses;
+
+    public Customer(String name,
+                    String surname,
+                    String username,
+                    String password,
+                    String email,
+                    Boolean isInstructor,
+                    byte[] picture) {
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.isInstructor = isInstructor;
+        this.picture = picture;
+    }
 }
