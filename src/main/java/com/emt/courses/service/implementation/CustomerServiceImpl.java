@@ -1,24 +1,22 @@
 package com.emt.courses.service.implementation;
 
-import com.emt.courses.model.CourseVideo;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.dto.CustomerDto;
+import com.emt.courses.model.dto.LoginUserDto;
 import com.emt.courses.repository.CustomerRepository;
 import com.emt.courses.service.CustomerService;
 import com.emt.courses.service.ShoppingCartService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -47,6 +45,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Optional<Customer> getCustomerByUsername(String username) {
+        return customerRepository.getByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        Optional<Customer> optionalCustomer = getCustomerByUsername(username);
+        optionalCustomer.orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + "is not found"));
+
+        return optionalCustomer.get();
+    }
+
+    @Override
+    public Optional<Customer> getCustomerByUsernameAndPassword(LoginUserDto loginUserDto) throws UsernameNotFoundException {
+        Optional<Customer> optionalCustomer = customerRepository.getByUsernameAndPassword(loginUserDto.getUsername(), loginUserDto.getPassword());
+
+        optionalCustomer.orElseThrow(() -> new UsernameNotFoundException("User with username: " + loginUserDto.getUsername() + "is not found"));
+        return optionalCustomer;
+    }
+
+    @Override
     public Customer updateCustomer(Customer user) {
         Optional<Customer> optionalCustomer = getCustomer(user.getId());
 
@@ -65,11 +85,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer saveCustomer(MultipartFile picture, CustomerDto customerDto) throws FileUploadException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(picture.getOriginalFilename()));
+    public Customer saveCustomer(MultipartFile picture, CustomerDto customerDto) throws FileUploadException, IOException {
+        String fileName = "";
+        byte[] pictureBytes = null;
+
+        if (picture != null) {
+            fileName = StringUtils.cleanPath(Objects.requireNonNull(picture.getOriginalFilename()));
+            pictureBytes = picture.getBytes();
+
+        }
         try {
             // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new FileUploadException("Sorry! Filename contains invalid path sequence " + fileName);
             }
             Customer customer = new Customer(customerDto.getName(),
@@ -78,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
                     customerDto.getPassword(),
                     customerDto.getEmail(),
                     customerDto.getIsInstructor(),
-                    picture.getBytes());
+                    pictureBytes);
 
             Customer savedCustomer = customerRepository.save(customer);
 
@@ -86,7 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
                 shoppingCartService.createEmptyShoppingCart(savedCustomer);
             }
             return savedCustomer;
-        } catch (IOException | FileUploadException ex) {
+        } catch (FileUploadException ex) {
             throw new FileUploadException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }

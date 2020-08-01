@@ -19,6 +19,9 @@ target/
 *.iml
 *.ipr
 
+### Videos
+*.webm
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

@@ -1,8 +1,11 @@
 import axios from 'axios';
-// Next we make an 'instance' of it
+
+let authUser = sessionStorage.getItem('user');
 const instance = axios.create({
-// .. where we make our configurations
-    baseURL: 'http://localhost:8080/api'
+    baseURL: 'http://localhost:8080/api',
+    headers: {
+        Authorization: authUser
+    }
 });
 
 export default instance;

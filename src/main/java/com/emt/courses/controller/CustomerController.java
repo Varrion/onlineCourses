@@ -4,12 +4,14 @@ import com.emt.courses.model.Course;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.ShoppingCart;
 import com.emt.courses.model.dto.CustomerDto;
+import com.emt.courses.model.dto.LoginUserDto;
 import com.emt.courses.service.CustomerService;
 import com.emt.courses.service.ShoppingCartService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,8 +42,13 @@ public class CustomerController {
         return customerService.getCustomer(id);
     }
 
+    @PostMapping("login")
+    Optional<Customer> findUserByUsernameAndPassword(@RequestBody LoginUserDto loginUserDto) {
+        return customerService.getCustomerByUsernameAndPassword(loginUserDto);
+    }
+
     @PostMapping
-    Customer saveUser(@RequestParam("userPhoto") MultipartFile photo, @RequestPart("userData") CustomerDto customerDto) throws FileUploadException {
+    Customer saveUser(@RequestParam(value = "userPhoto", required = false) MultipartFile photo, @RequestPart("userData") CustomerDto customerDto) throws FileUploadException, IOException {
         return customerService.saveCustomer(photo, customerDto);
     }
 
