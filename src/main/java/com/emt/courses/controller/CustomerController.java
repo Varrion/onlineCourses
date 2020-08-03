@@ -37,9 +37,9 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("{id}")
-    Optional<Customer> getUser(@PathVariable Integer id) {
-        return customerService.getCustomer(id);
+    @GetMapping("{username}")
+    Optional<Customer> getUserByUsername(@PathVariable String username) {
+        return customerService.getCustomerByUsername(username);
     }
 
     @PostMapping("login")

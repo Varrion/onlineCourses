@@ -1,16 +1,14 @@
 import React, {useState} from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import {Link} from "@reach/router";
+import {Link, navigate} from "@reach/router";
 import {Jumbotron} from "react-bootstrap";
 import axios from "../../axiosConfig/axiosConfig"
 
-export default function CustomerLogin() {
-
-    const [isLoggedIn, setLoggedIn] = useState(false);
+export default function CustomerLogin(props) {
     const [user, setUser] = useState({
-        username: "admin",
-        password: "admin",
+        username: "",
+        password: "",
     });
 
     const handleChange = name => event => {
@@ -25,29 +23,17 @@ export default function CustomerLogin() {
     const handleSubmit = event => {
         event.preventDefault();
 
-        console.log("User", user);
-
         axios.post("user/login", user)
-            .then(() => {
-                setLoggedIn(true);
+            .then((res) => {
+                props.setLoggedUser(res.data);
                 sessionStorage.setItem("user", createBasicAuthToken(user.username, user.password))
+                sessionStorage.setItem("instructor", res.data.isInstructor)
+                navigate("/").then(() => window.location.reload());
             })
             .catch((err) => {
-                setLoggedIn(false)
                 console.log(err);
             })
     };
-
-    //
-    // axios.get("basicauth", {
-    //     headers: {
-    //         authorization: createBasicAuthToken(user.username, user.password)
-    //     }
-    // })
-    //     .then(() => {
-    //
-    //     })
-    //     .catch(err => console.log(err))
 
     return (
         <div className="text-left mt-4 offset-2 col-lg-8">

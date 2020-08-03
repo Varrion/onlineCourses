@@ -13,6 +13,8 @@ public interface CourseService {
 
     List<Course> getAllCoursesByCategory(int categoryId);
 
+    List<Course> getAllFreeCourses(boolean isFree);
+
     Optional<Course> getCourse(int courseId);
 
     Course saveCourse(Course course);

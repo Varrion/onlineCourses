@@ -33,6 +33,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getAllFreeCourses(boolean isFree) {
+        return courseRepository.getAllByIsFree(isFree);
+    }
+
+    @Override
     public Optional<Course> getCourse(int courseId) {
         return courseRepository.findById(courseId);
     }
@@ -55,7 +60,6 @@ public class CourseServiceImpl implements CourseService {
             updateCourse.setPrice(course.getPrice());
             return saveCourse(updateCourse);
         }
-
         return null;
     }
 

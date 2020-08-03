@@ -23,24 +23,24 @@ export default function CourseDetails(props) {
 
     useEffect(() => {
         axios.get(`courses/${props.courseId}`, props.courseId)
-            .then(response => setCourse(response.data))
+            .then(response => {
+                setCourse(response.data)
+            })
             .catch(err => console.log(err))
 
         axios.get(`courses/${props.courseId}/videos`)
             .then(res => {
                 setCourseVideos(res.data)
-                console.log(res.data);
             })
             .catch(err => console.log(err))
 
         axios.get(`courses/${props.courseId}/ratings`)
             .then(res => {
                 setCourseRatings(res.data)
-                console.log(res.data);
             })
             .catch(err => console.log(err))
 
-    }, [addVideo, editCourse])
+    }, [addVideo, editCourse, props.loggedUser])
 
     const deleteCourse = () => {
         axios.delete(`courses/${props.courseId}`)
@@ -57,13 +57,20 @@ export default function CourseDetails(props) {
                             <p>Description: {course.description}</p>
                             <p>Category: {course.category?.name}</p>
                             <p>Price: ${course.price}</p>
-                            <Button onClick={() => setAddVideo(true)}> Insert Video</Button>
-                            <AddUpdateCourseVideo courseId={course.id} showModal={addVideo} setShowModal={setAddVideo}/>
+
+                            {course.instructor?.id === props.loggedUser?.id &&
+                            <>
+                                <Button onClick={() => setAddVideo(true)}> Insert Video</Button>
+                                <AddUpdateCourseVideo courseId={course.id} showModal={addVideo}
+                                                      setShowModal={setAddVideo}/>
+
+                                <Button variant="danger" onClick={deleteCourse}>Delete Course</Button>
+                            </>
+                            }
 
                             <Button onClick={() => setEditCourse(true)}> Edit Course</Button>
                             <AddUpdateCourse course={course} showModal={editCourse} setShowModal={setEditCourse}/>
 
-                            <Button variant="danger" onClick={deleteCourse}>Delete Course</Button>
                         </div>
                     </Card.Body>
                 </Card>

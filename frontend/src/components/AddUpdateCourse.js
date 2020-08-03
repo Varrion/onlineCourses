@@ -16,13 +16,14 @@ function AddUpdateCourse(props) {
             id: props.category ? props.category.id : 0
         },
         isFree: false,
+        instructor: props.loggedUser
     }
 
     const [course, setCourse] = useState(props.course ? props.course : initialCourse);
 
-    useEffect(() => { // zivoten ciklus na edna komponenta
+    useEffect(() => {
         axios.get("category")
-            .then(res => setCategory(res.data)) // ako e uspesno
+            .then(res => setCategory(res.data))
             .catch(err => console.log(err))
     }, [])
 
@@ -43,6 +44,7 @@ function AddUpdateCourse(props) {
             course.price = 0
         }
 
+        console.log(course);
         if (!props.course) {
             axios.post("courses", course)
                 .then(() => {

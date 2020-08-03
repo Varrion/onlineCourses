@@ -34,7 +34,7 @@ public class Customer implements UserDetails {
 
     Boolean isInstructor;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToOne(cascade = CascadeType.ALL)
     ShoppingCart shoppingCart;
 
     @ManyToMany

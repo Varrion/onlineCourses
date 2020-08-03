@@ -30,7 +30,12 @@ public class CourseController {
     }
 
     @GetMapping
-    List<Course> getAllCourses() {
+    List<Course> getAllCourses(@RequestParam(required = false) Optional<Boolean> isFree) {
+
+        if (isFree.isPresent()) {
+            return courseService.getAllFreeCourses(isFree.get());
+        }
+        
         return courseService.getAllCourses();
     }
 

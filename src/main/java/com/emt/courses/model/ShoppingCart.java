@@ -19,6 +19,6 @@ public class ShoppingCart {
     @ManyToMany
     Set<Course> courses;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "shoppingCart")
     Customer customer;
 }

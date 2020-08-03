@@ -20,7 +20,8 @@ export default function AddCategory(props) {
         event.preventDefault();
 
         axios.post("category", category)
-            .then(res => navigate(`${res.data.id}`))
+            .then(res => navigate(`${res.data.id}`)
+                .then(() => window.location.reload()))
             .catch(err => console.log(err))
     }
 

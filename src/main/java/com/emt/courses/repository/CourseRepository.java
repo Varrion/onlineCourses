@@ -15,4 +15,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Transactional
     List<Course> getAllByCategoryId(int categoryId);
+
+    @Transactional
+    List<Course> getAllByIsFree(boolean isFree);
 }
