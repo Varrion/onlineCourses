@@ -14,8 +14,6 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 export default function CourseDetails(props) {
 
     const [course, setCourse] = useState(null);
-    const [courseVideos, setCourseVideos] = useState(null);
-    const [courseRatings, setCourseRatings] = useState(null);
     const [addVideo, setAddVideo] = useState(false);
     const [editCourse, setEditCourse] = useState(false);
     const [courseInShoppingCart, setCourseInShoppingCart] = useState(null);
@@ -40,19 +38,6 @@ export default function CourseDetails(props) {
         }
 
         if (course) {
-            axios.get(`courses/${props.courseId}/videos`)
-                .then(res => {
-                    setCourseVideos(res.data)
-                })
-                .catch(err => console.log(err))
-
-            axios.get(`courses/${props.courseId}/ratings`)
-                .then(res => {
-                    console.log(res.data);
-                    setCourseRatings(res.data)
-                })
-                .catch(err => console.log(err))
-
             axios.get(`user/${props.loggedUser?.id}/owned-courses`)
                 .then(res => {
                     res.data.map(ownedCourse => {
@@ -98,7 +83,7 @@ export default function CourseDetails(props) {
                             </>
 
                             }
-                            {!props.loggedUser?.isInstructor && !courseInShoppingCart && !isOwnedCourse &&
+                            {!course.isFree && !props.loggedUser?.isInstructor && !courseInShoppingCart && !isOwnedCourse &&
                             <Button onClick={() => addToShoppingCart(course)}> Add Course to shopping cart </Button>}
                         </div>
                     </Card.Body>
@@ -106,11 +91,11 @@ export default function CourseDetails(props) {
                 <Jumbotron>
                     <Tabs defaultActiveKey="courseRating" id="course_tabs">
                         <Tab eventKey="courseRating" title="CourseRatings">
-                            <CourseRatings loggedUser={props.loggedUser} ratings={courseRatings} course={course}/>
+                            <CourseRatings loggedUser={props.loggedUser} courseId={course.id} course={course}/>
                         </Tab>
                         <Tab eventKey="videos" title="Videos">
                             {isOwnedCourse || (props.loggedUser && props.loggedUser.id === course.instructor?.id) || course.isFree
-                                ? <CourseVideos course={course} videos={courseVideos}/>
+                                ? <CourseVideos course={course} addedVideo={addVideo}/>
                                 : <p> You need to buy the course first</p>}
                         </Tab>
                     </Tabs>

@@ -1,7 +1,6 @@
 package com.emt.courses.service;
 
 import com.emt.courses.model.Course;
-import com.emt.courses.model.CourseCategory;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.dto.CourseDto;
 
@@ -26,9 +25,9 @@ public interface CourseService {
 
     Optional<Course> getCourseByCustomerShoppingCartAndId(int customerId, int courseId);
 
-    Course saveCourse(CourseDto courseDto, CourseCategory category, Customer customer);
+    Course saveCourse(CourseDto courseDto, Customer customer);
 
-    Course updateCourse(Course course);
+    Course updateCourse(CourseDto courseDto);
 
     void deleteCourse(int courseId);
 }

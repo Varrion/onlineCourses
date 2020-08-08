@@ -5,6 +5,7 @@ import com.emt.courses.model.CourseCategory;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.dto.CourseDto;
 import com.emt.courses.repository.CourseRepository;
+import com.emt.courses.service.CourseCategoryService;
 import com.emt.courses.service.CourseService;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseCategoryService categoryService;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, CourseCategoryService categoryService) {
         this.courseRepository = courseRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -61,29 +64,33 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course saveCourse(CourseDto courseDto, CourseCategory category, Customer customer) {
+    public Course saveCourse(CourseDto courseDto, Customer customer) {
+        Optional<CourseCategory> optionalCourseCategory = categoryService.getCategory(courseDto.categoryId);
         Course course = new Course(courseDto.id,
                 courseDto.name,
                 courseDto.description,
                 courseDto.price,
                 courseDto.isFree);
 
-        course.setCategory(category);
+        optionalCourseCategory.ifPresent(course::setCategory);
         course.setInstructor(customer);
         return courseRepository.save(course);
     }
 
     @Override
-    public Course updateCourse(Course course) {
-        Optional<Course> optionalCourse = getCourse(course.getId());
-
+    public Course updateCourse(CourseDto courseDto) {
+        Optional<Course> optionalCourse = getCourse(courseDto.id);
         if (optionalCourse.isPresent()) {
             Course updateCourse = optionalCourse.get();
-            updateCourse.setCategory(course.getCategory());
-            updateCourse.setDescription(course.getDescription());
-            updateCourse.setName(course.getName());
-            updateCourse.setIsFree(course.getIsFree());
-            updateCourse.setPrice(course.getPrice());
+
+            if (courseDto.categoryId != null) {
+                Optional<CourseCategory> optionalCourseCategory = categoryService.getCategory(courseDto.categoryId);
+                optionalCourseCategory.ifPresent(updateCourse::setCategory);
+            }
+            updateCourse.setDescription(courseDto.description);
+            updateCourse.setName(courseDto.name);
+            updateCourse.setIsFree(courseDto.isFree);
+            updateCourse.setPrice(courseDto.price);
             return courseRepository.save(updateCourse);
         }
         return null;

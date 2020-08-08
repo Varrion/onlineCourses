@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import './global.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@fortawesome/fontawesome-free/css/all.css'
 import 'video-react/dist/video-react.css';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -20,6 +21,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import UserShoppingCart from "./pages/customer/shoppingCart/UserShoppingCart";
 import axios from "./axiosConfig/axiosConfig"
 import Dashboard from "./pages/Dashboard";
+
 
 function App() {
 

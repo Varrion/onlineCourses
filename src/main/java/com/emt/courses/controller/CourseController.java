@@ -20,14 +20,15 @@ public class CourseController {
     private final CourseVideoService courseVideoService;
     private final CourseRatingService courseRatingService;
     private final CustomerService customerService;
-    private final CourseCategoryService courseCategoryService;
 
-    public CourseController(CourseService courseService, CourseVideoService courseVideoService, CourseRatingService courseRatingService, CustomerService customerService, CourseCategoryService categoryService) {
+    public CourseController(CourseService courseService,
+                            CourseVideoService courseVideoService,
+                            CourseRatingService courseRatingService,
+                            CustomerService customerService) {
         this.courseService = courseService;
         this.courseVideoService = courseVideoService;
         this.courseRatingService = courseRatingService;
         this.customerService = customerService;
-        this.courseCategoryService = categoryService;
     }
 
     @GetMapping
@@ -58,19 +59,17 @@ public class CourseController {
     @PostMapping
     Course saveCourse(@RequestBody CourseDto courseDto) {
         Optional<Customer> optionalCustomer = customerService.getCustomer(courseDto.instructorId);
-        Optional<CourseCategory> optionalCourseCategory = courseCategoryService.getCategory(courseDto.categoryId);
-        if (optionalCourseCategory.isPresent() && optionalCustomer.isPresent()) {
-            CourseCategory category = optionalCourseCategory.get();
+        if (optionalCustomer.isPresent()) {
             Customer instructor = optionalCustomer.get();
-            return courseService.saveCourse(courseDto, category, instructor);
+            return courseService.saveCourse(courseDto, instructor);
         }
 
         return null;
     }
 
     @PutMapping
-    Course updateCourse(@RequestBody Course course) {
-        return courseService.updateCourse(course);
+    Course updateCourse(@RequestBody CourseDto courseDto) {
+        return courseService.updateCourse(courseDto);
     }
 
 

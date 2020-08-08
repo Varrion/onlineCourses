@@ -1,14 +1,26 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import {Player} from "video-react";
+import axios from "../../../axiosConfig/axiosConfig";
 
 export default function CourseVideos(props) {
+
+    const [courseVideos, setCourseVideos] = useState(null);
+
+    useEffect(() => {
+        axios.get(`courses/${props.course.id}/videos`)
+            .then(res => {
+                setCourseVideos(res.data)
+            })
+            .catch(err => console.log(err))
+    }, [props.addedVideo])
+
     return (
         <div>
             <Accordion className="text-left" defaultActiveKey={0}>
-                {props.videos && props.videos.length
-                    ? props.videos.map((video, index) => <Card key={index}>
+                {courseVideos && courseVideos.length
+                    ? courseVideos.map((video, index) => <Card key={index}>
                         <Accordion.Toggle as={Card.Header} eventKey={video.id}>
                             {video.title}
                         </Accordion.Toggle>

@@ -33,8 +33,11 @@ export default function Header(props) {
                         {categories && categories.map((category, index) =>
                             <Link className="dropdown-item" to={`category/${category.id}`}
                                   key={index}>{category.name}</Link>)}
-                        <NavDropdown.Divider/>
-                        { props.loggedUser?.isInstructor && <Link className={"dropdown-item"} to={"category/add"}>Add Category</Link> }
+                        {props.loggedUser?.isInstructor &&
+                        <>
+                            <NavDropdown.Divider/>
+                            <Link className={"dropdown-item"} to={"category/add"}>Add Category</Link>
+                        </>}
                     </NavDropdown>
                 </Nav>
                 <Nav>
@@ -44,10 +47,12 @@ export default function Header(props) {
                             <Link to="/register" className="nav-link"> Register </Link>
                         </>
                         : <NavDropdown alignRight title={props.loggedUser?.name} id="profile-dropdown">
-                            <Link className="dropdown-item" to={`user/${props.loggedUser.username}`} state={{ loggedUser: props.loggedUser}}>
+                            <Link className="dropdown-item" to={`user/${props.loggedUser.username}`}
+                                  state={{loggedUser: props.loggedUser}}>
                                 Profile Details</Link>
-                            {!props.loggedUser.isInstructor && <Link className="dropdown-item" to={`user/${props.loggedUser.id}/cart`}>
-                                Shopping Cart</Link> }
+                            {!props.loggedUser.isInstructor &&
+                            <Link className="dropdown-item" to={`user/${props.loggedUser.id}/cart`}>
+                                Shopping Cart</Link>}
                             <NavDropdown.Divider/>
                             <Button variant="link" onClick={logoutUser} className={"dropdown-item"}>Logout</Button>
                         </NavDropdown>}

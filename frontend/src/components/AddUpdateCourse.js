@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -12,7 +12,7 @@ function AddUpdateCourse(props) {
         name: '',
         description: '',
         price: 0,
-        categoryId: props.category ? props.category.id : 0,
+        categoryId: props.category && props.category.id !== null ? props.category.id : 0,
         isFree: false,
         instructorId: props.loggedUser ? props.loggedUser.id : 0
     }
@@ -20,10 +20,12 @@ function AddUpdateCourse(props) {
     const [course, setCourse] = useState(props.course ? props.course : initialCourse);
 
     useEffect(() => {
-        axios.get("category")
-            .then(res => setCategory(res.data))
-            .catch(err => console.log(err))
-    }, [])
+        if (props.showModal) {
+            axios.get("category")
+                .then(res => setCategory(res.data))
+                .catch(err => console.log(err))
+        }
+    }, [props.showModal])
 
     const handleChange = name => event => {
         if (name === "isFree") {
@@ -42,7 +44,9 @@ function AddUpdateCourse(props) {
             course.price = 0
         }
 
-        console.log(course);
+        if (course.price === 0 && !course.isFree) {
+            course.isFree = true;
+        }
         if (!props.course) {
             axios.post("courses", course)
                 .then(() => {
@@ -98,7 +102,8 @@ function AddUpdateCourse(props) {
                     </Form.Group>}
 
                     <Form.Group controlId="formCourseIsFree">
-                        <Form.Check value={course.isFree} onChange={handleChange("isFree")} type="checkbox"
+                        <Form.Check checked={course.isFree} value={course.isFree} onChange={handleChange("isFree")}
+                                    type="switch"
                                     label="Is Course Free"/>
                     </Form.Group>
 
