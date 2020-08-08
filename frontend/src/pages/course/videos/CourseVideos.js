@@ -27,7 +27,7 @@ export default function CourseVideos(props) {
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>
-                                <p>Insert videos for this course</p>
+                                {!props.course.isFree ? <p> Insert videos for this course</p> : <p> Wait for the instructor to upload videos </p> }
                             </Card.Body>
                         </Accordion.Collapse>
                     </Card>}

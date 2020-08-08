@@ -1,6 +1,9 @@
 package com.emt.courses.service.implementation;
 
 import com.emt.courses.model.Course;
+import com.emt.courses.model.CourseCategory;
+import com.emt.courses.model.Customer;
+import com.emt.courses.model.dto.CourseDto;
 import com.emt.courses.repository.CourseRepository;
 import com.emt.courses.service.CourseService;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getAllOwnedCoursesForCustomer(Customer customer) {
+        return courseRepository.findAllByCustomersIs(customer);
+    }
+
+    @Override
     public List<Course> getAllCoursesByCategory(int categoryId) {
         return courseRepository.getAllByCategoryId(categoryId);
     }
@@ -38,12 +46,30 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getAllCoursesInShoppingCart(int shoppingCartId) {
+        return courseRepository.getAllByShoppingCartId(shoppingCartId);
+    }
+
+    @Override
     public Optional<Course> getCourse(int courseId) {
         return courseRepository.findById(courseId);
     }
 
     @Override
-    public Course saveCourse(Course course) {
+    public Optional<Course> getCourseByCustomerShoppingCartAndId(int customerId, int courseId) {
+        return courseRepository.getCourseByCustomerShoppingCartAndId(customerId, courseId);
+    }
+
+    @Override
+    public Course saveCourse(CourseDto courseDto, CourseCategory category, Customer customer) {
+        Course course = new Course(courseDto.id,
+                courseDto.name,
+                courseDto.description,
+                courseDto.price,
+                courseDto.isFree);
+
+        course.setCategory(category);
+        course.setInstructor(customer);
         return courseRepository.save(course);
     }
 
@@ -58,7 +84,7 @@ public class CourseServiceImpl implements CourseService {
             updateCourse.setName(course.getName());
             updateCourse.setIsFree(course.getIsFree());
             updateCourse.setPrice(course.getPrice());
-            return saveCourse(updateCourse);
+            return courseRepository.save(updateCourse);
         }
         return null;
     }

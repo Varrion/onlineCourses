@@ -8,8 +8,8 @@ export default function PrivateRoute(props) {
 
     return (
         <AuthContext.Consumer>
-            { ({authUser}) =>
-                authUser ? <Component {...otherProps} /> : <Redirect to={"/login"} noThrow/>
+            {({authUser}) =>
+                authUser && authUser.user ? <Component {...otherProps} /> : <Redirect to={"/login"} noThrow/>
             }
         </AuthContext.Consumer>
     )

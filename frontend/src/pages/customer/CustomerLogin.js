@@ -27,7 +27,7 @@ export default function CustomerLogin(props) {
             .then((res) => {
                 props.setLoggedUser(res.data);
                 sessionStorage.setItem("user", createBasicAuthToken(user.username, user.password))
-                sessionStorage.setItem("instructor", res.data.isInstructor)
+                sessionStorage.setItem("instructor", res.data.isInstructor ?? false)
                 navigate("/").then(() => window.location.reload());
             })
             .catch((err) => {

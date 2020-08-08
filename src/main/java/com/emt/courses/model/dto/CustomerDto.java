@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CustomerDto {
+
     String name;
 
     String surname;

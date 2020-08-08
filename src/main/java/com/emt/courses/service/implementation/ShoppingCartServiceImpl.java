@@ -3,10 +3,12 @@ package com.emt.courses.service.implementation;
 import com.emt.courses.model.Course;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.ShoppingCart;
+import com.emt.courses.model.dto.CourseDto;
 import com.emt.courses.repository.ShoppingCartRepository;
 import com.emt.courses.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -19,8 +21,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCart getUserShoppingCart(int customerId) {
-        return cartRepository.getShoppingCartByCustomerId(customerId);
+    public Optional<ShoppingCart> getUserShoppingCart(int customerId) {
+        return cartRepository.findByCustomerId(customerId);
     }
 
     @Override
@@ -32,18 +34,35 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCart updateShoppingCart(int customerId, Set<Course> courses) {
-        ShoppingCart shoppingCart = getUserShoppingCart(customerId);
-        shoppingCart.setCourses(courses);
+    public ShoppingCart updateShoppingCart(int customerId, CourseDto courseDto) {
+        Optional<ShoppingCart> optionalShoppingCart = getUserShoppingCart(customerId);
 
-        return cartRepository.save(shoppingCart);
+        Course course = new Course(courseDto.id,
+                courseDto.name,
+                courseDto.description,
+                courseDto.price,
+                courseDto.isFree);
+
+        if (optionalShoppingCart.isPresent()) {
+            ShoppingCart shoppingCart = optionalShoppingCart.get();
+
+            Set<Course> courseSet = shoppingCart.getCourses();
+            if (courseSet.contains(course)) {
+                courseSet.remove(course);
+            } else {
+                courseSet.add(course);
+            }
+
+            shoppingCart.setCourses(courseSet);
+            return cartRepository.save(shoppingCart);
+        }
+        return null;
     }
 
     @Override
-    public ShoppingCart buyCourseFromShoppingCart(int customerId, Course course) {
-        ShoppingCart shoppingCart = getUserShoppingCart(customerId);
-        shoppingCart.getCourses().remove(course);
-
-        return cartRepository.save(shoppingCart);
+    public ShoppingCart emptyCoursesFromShoppingCart(ShoppingCart shoppingCart) {
+        Customer customer = shoppingCart.getCustomer();
+        cartRepository.delete(shoppingCart);
+        return createEmptyShoppingCart(customer);
     }
 }

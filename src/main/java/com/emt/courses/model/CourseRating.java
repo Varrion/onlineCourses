@@ -27,9 +27,10 @@ public class CourseRating {
     @OneToOne
     Customer customer;
 
-    public CourseRating(Rating rating, String comment, Course course) {
+    public CourseRating(Rating rating, String comment, Course course, Customer customer) {
         this.rating = rating;
         this.comment = comment;
         this.course = course;
+        this.customer = customer;
     }
 }

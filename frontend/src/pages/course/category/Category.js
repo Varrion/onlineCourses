@@ -9,17 +9,16 @@ export default function Category(props) {
 
     const [showAddCourseModal, setShowAddCourseModal] = useState(false);
 
-    useEffect( () => {
+    useEffect(() => {
         axios.get(`category/${props.categoryId}`)
             .then(res => setCategory(res.data))
             .catch(err => console.log(err))
 
         axios.get(`courses/category/${props.categoryId}`)
-            .then(res => {setCourses(res.data)
-            console.log(res.data.length)})
+            .then(res => setCourses(res.data))
             .catch(err => console.log(err))
 
-    },[props.categoryId, showAddCourseModal])
+    }, [props.categoryId, showAddCourseModal, props.loggedUser])
 
     return (
         <div>
@@ -27,10 +26,11 @@ export default function Category(props) {
                 <p> Name: {category.name}</p>
                 <p> Description : {category.description}</p>
                 <Button onClick={() => setShowAddCourseModal(true)}>Add Course </Button>
-                <AddUpdateCourse showModal={showAddCourseModal} setShowModal={setShowAddCourseModal} category={category} />
+                <AddUpdateCourse loggedUser={props.loggedUser} showModal={showAddCourseModal}
+                                 setShowModal={setShowAddCourseModal} category={category}/>
             </div>}
 
-            {courses && courses.length > 0 ? courses.map( (course, index) => <div key={index}>
+            {courses && courses.length > 0 ? courses.map((course, index) => <div key={index}>
                 <p>Name: {course.name}</p>
                 <p>Description: {course.description}</p>
             </div>) : <p>No courses are added in this category</p>}

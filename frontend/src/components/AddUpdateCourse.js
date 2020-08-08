@@ -12,11 +12,9 @@ function AddUpdateCourse(props) {
         name: '',
         description: '',
         price: 0,
-        category: {
-            id: props.category ? props.category.id : 0
-        },
+        categoryId: props.category ? props.category.id : 0,
         isFree: false,
-        instructor: props.loggedUser
+        instructorId: props.loggedUser ? props.loggedUser.id : 0
     }
 
     const [course, setCourse] = useState(props.course ? props.course : initialCourse);
@@ -90,7 +88,7 @@ function AddUpdateCourse(props) {
 
                     {!props.category && <Form.Group controlId="formCourseCategory">
                         <Form.Label>Category</Form.Label>
-                        <Form.Control as="select" value={course.category?.id} onChange={handleChange("category")}>
+                        <Form.Control as="select" value={course.categoryId} onChange={handleChange("categoryId")}>
                             <option value={0}>Select Category</option>
                             {category != null && category.map((item, index) =>
                                 <option value={item.id} key={index}>{item.name}</option>

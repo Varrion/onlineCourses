@@ -2,6 +2,7 @@ package com.emt.courses.service.implementation;
 
 import com.emt.courses.model.Course;
 import com.emt.courses.model.CourseRating;
+import com.emt.courses.model.Customer;
 import com.emt.courses.model.dto.CourseRatingDto;
 import com.emt.courses.model.enums.Rating;
 import com.emt.courses.repository.CourseRatingRepository;
@@ -48,7 +49,7 @@ public class CourseRatingServiceImpl implements CourseRatingService {
     }
 
     @Override
-    public CourseRating saveRating(CourseRatingDto courseRating, Integer courseId) {
+    public CourseRating saveRating(CourseRatingDto courseRating, Customer customer, Integer courseId) {
 
         Optional<Course> optionalCourse = courseService.getCourse(courseId);
 
@@ -56,7 +57,7 @@ public class CourseRatingServiceImpl implements CourseRatingService {
             Course course = optionalCourse.get();
             Rating ratingEnum = Rating.fromInteger(courseRating.getRating());
 
-            CourseRating rating = new CourseRating(ratingEnum, courseRating.getComment(), course);
+            CourseRating rating = new CourseRating(ratingEnum, courseRating.getComment(), course, customer);
             return ratingRepository.save(rating);
         }
         return null;

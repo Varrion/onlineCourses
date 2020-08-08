@@ -43,11 +43,13 @@ function App() {
         return encodedString.split(":")[0]
     }
 
-    useEffect( () => {
+    useEffect(() => {
         if (authUser.user) {
-           axios.get(`user/${getUsername(authUser.user)}`)
-               .then(res => setLoggedUser(res.data))
-               .catch(err => console.log(err))
+            axios.get(`user/${getUsername(authUser.user)}`)
+                .then(res => {
+                    setLoggedUser(res.data)
+                })
+                .catch(err => console.log(err))
         }
     }, [authUser.user])
 
@@ -58,16 +60,17 @@ function App() {
                 <div className="App container">
                     <Router>
                         <Dashboard path="/"/>
-                        <CustomerLogin loggedUser={loggedUser} setLoggedUser={setLoggedUser} authUser={authUser} path="login"/>
+                        <CustomerLogin loggedUser={loggedUser} setLoggedUser={setLoggedUser} authUser={authUser}
+                                       path="login"/>
                         <CustomerRegister path="register"/>
-                        <CustomerInfo path="user/:username"/>
+                        <PrivateRoute component={CustomerInfo} path="user/:username"/>
                         <Courses loggedUser={loggedUser} path="courses"/>
-                        <CourseDetails loggedUser={loggedUser}  path="courses/:courseId"/>
+                        <CourseDetails loggedUser={loggedUser} path="courses/:courseId"/>
                         <CourseVideos path="courses/:courseId/videos"/>
                         <CourseVideoDetails path="courses/:courseId/videos/:videoId"/>
-                        <Category path="category/:categoryId"/>
+                        <Category loggedUser={loggedUser} path="category/:categoryId"/>
                         <PrivateRoute component={AddCategory} path="category/add"/>
-                        <PrivateRoute component={UserShoppingCart} path="user/:userId/cart"/>
+                        <PrivateRoute loggedUser={loggedUser} component={UserShoppingCart} path="user/:userId/cart"/>
                     </Router>
                 </div>
                 <Footer/>

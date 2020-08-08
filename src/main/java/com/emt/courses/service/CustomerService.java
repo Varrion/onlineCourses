@@ -29,4 +29,7 @@ public interface CustomerService extends UserDetailsService {
 
     void deleteCustomer(int userId);
 
+    void addFreeCourseToCollection(int courseId, int customerId);
+
+    boolean addCoursesToCollection(int customerId);
 }

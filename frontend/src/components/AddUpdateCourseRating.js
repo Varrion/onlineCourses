@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ReactStars from "react-rating-stars-component/dist/react-stars";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -9,12 +9,17 @@ export default function AddUpdateReactRating(props) {
     const initialRating = {
         comment: '',
         rating: 0,
+        customerId: props.loggedUser.id
     }
     const [rating, setRating] = useState(initialRating);
 
     const ratingChanged = newRating => {
         setRating({...rating, rating: newRating});
     }
+
+    useEffect(() => {
+        setRating(initialRating);
+    }, [])
 
     const handleChange = name => event => {
         setRating({...rating, [name]: event.target.value});
@@ -23,10 +28,9 @@ export default function AddUpdateReactRating(props) {
     const handleSubmit = event => {
         event.preventDefault();
 
-        axios.post(`/courses/${props.courseId}/ratings`, rating)
+        axios.post(`/courses/${props.course.id}/ratings`, rating)
             .then(() => {
-                setRating(initialRating);
-                window.location.reload();
+                window.location.reload()
             })
             .catch(err => console.log(err))
     }

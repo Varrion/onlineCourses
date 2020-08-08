@@ -18,7 +18,9 @@ export default function CourseDetails(props) {
     const [courseRatings, setCourseRatings] = useState(null);
     const [addVideo, setAddVideo] = useState(false);
     const [editCourse, setEditCourse] = useState(false);
-    const [tabKey, setTabKey] = useState('videos');
+    const [courseInShoppingCart, setCourseInShoppingCart] = useState(null);
+    const [addedInShoppingCart, setAddedInShoppingCart] = useState(false);
+    const [isOwnedCourse, setIsOwnedCourse] = useState(false);
 
 
     useEffect(() => {
@@ -28,24 +30,50 @@ export default function CourseDetails(props) {
             })
             .catch(err => console.log(err))
 
-        axios.get(`courses/${props.courseId}/videos`)
-            .then(res => {
-                setCourseVideos(res.data)
-            })
-            .catch(err => console.log(err))
+        if (props.loggedUser) {
+            axios.get(`courses/${props.courseId}/cart/${props.loggedUser.id}`)
+                .then(res => {
+                    setCourseInShoppingCart(res.data);
+                    setAddedInShoppingCart(false);
+                })
+                .catch(err => console.log(err))
+        }
 
-        axios.get(`courses/${props.courseId}/ratings`)
-            .then(res => {
-                setCourseRatings(res.data)
-            })
-            .catch(err => console.log(err))
+        if (course) {
+            axios.get(`courses/${props.courseId}/videos`)
+                .then(res => {
+                    setCourseVideos(res.data)
+                })
+                .catch(err => console.log(err))
 
-    }, [addVideo, editCourse, props.loggedUser])
+            axios.get(`courses/${props.courseId}/ratings`)
+                .then(res => {
+                    console.log(res.data);
+                    setCourseRatings(res.data)
+                })
+                .catch(err => console.log(err))
+
+            axios.get(`user/${props.loggedUser?.id}/owned-courses`)
+                .then(res => {
+                    res.data.map(ownedCourse => {
+                        if (ownedCourse.id === course.id) {
+                            setIsOwnedCourse(true);
+                        }
+                    })
+                })
+                .catch(err => console.log(err))
+        }
+    }, [addVideo, editCourse, props.loggedUser, addedInShoppingCart, isOwnedCourse])
 
     const deleteCourse = () => {
         axios.delete(`courses/${props.courseId}`)
             .then(() => navigate(-1))
             .catch(err => console.log(err))
+    }
+
+    const addToShoppingCart = (course) => {
+        axios.put(`user/${props.loggedUser.id}/cart`, course)
+            .then(() => setAddedInShoppingCart(true))
     }
 
     return (
@@ -58,30 +86,32 @@ export default function CourseDetails(props) {
                             <p>Category: {course.category?.name}</p>
                             <p>Price: ${course.price}</p>
 
-                            {course.instructor?.id === props.loggedUser?.id &&
+                            { props.loggedUser && props.loggedUser.id === course.instructor?.id &&
                             <>
                                 <Button onClick={() => setAddVideo(true)}> Insert Video</Button>
                                 <AddUpdateCourseVideo courseId={course.id} showModal={addVideo}
                                                       setShowModal={setAddVideo}/>
 
                                 <Button variant="danger" onClick={deleteCourse}>Delete Course</Button>
+                                <Button onClick={() => setEditCourse(true)}> Edit Course</Button>
+                                <AddUpdateCourse course={course} showModal={editCourse} setShowModal={setEditCourse}/>
                             </>
+
                             }
-
-                            <Button onClick={() => setEditCourse(true)}> Edit Course</Button>
-                            <AddUpdateCourse course={course} showModal={editCourse} setShowModal={setEditCourse}/>
-
+                            {!props.loggedUser?.isInstructor && !courseInShoppingCart && !isOwnedCourse &&
+                            <Button onClick={() => addToShoppingCart(course)}> Add Course to shopping cart </Button>}
                         </div>
                     </Card.Body>
                 </Card>
                 <Jumbotron>
-                    <Tabs defaultActiveKey="videos" id="uncontrolled-tab-example"
-                          onSelect={(key) => setTabKey(key)}>
-                        <Tab eventKey="videos" title="Videos">
-                            <CourseVideos videos={courseVideos}/>
-                        </Tab>
+                    <Tabs defaultActiveKey="courseRating" id="course_tabs">
                         <Tab eventKey="courseRating" title="CourseRatings">
-                            <CourseRatings ratings={courseRatings} courseId={course.id}/>
+                            <CourseRatings loggedUser={props.loggedUser} ratings={courseRatings} course={course}/>
+                        </Tab>
+                        <Tab eventKey="videos" title="Videos">
+                            {isOwnedCourse || (props.loggedUser && props.loggedUser.id === course.instructor?.id) || course.isFree
+                                ? <CourseVideos course={course} videos={courseVideos}/>
+                                : <p> You need to buy the course first</p>}
                         </Tab>
                     </Tabs>
                 </Jumbotron>

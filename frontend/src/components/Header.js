@@ -43,8 +43,8 @@ export default function Header(props) {
                             <Link to="/login" className="nav-link"> Login</Link>
                             <Link to="/register" className="nav-link"> Register </Link>
                         </>
-                        : <NavDropdown alignRight title={props.loggedUser.name} id="profile-dropdown">
-                            <Link className="dropdown-item" to={`user/${props.loggedUser.username}`}>
+                        : <NavDropdown alignRight title={props.loggedUser?.name} id="profile-dropdown">
+                            <Link className="dropdown-item" to={`user/${props.loggedUser.username}`} state={{ loggedUser: props.loggedUser}}>
                                 Profile Details</Link>
                             {!props.loggedUser.isInstructor && <Link className="dropdown-item" to={`user/${props.loggedUser.id}/cart`}>
                                 Shopping Cart</Link> }

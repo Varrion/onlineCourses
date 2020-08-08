@@ -1,8 +1,7 @@
 package com.emt.courses.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,7 +12,8 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Customer implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +34,12 @@ public class Customer implements UserDetails {
 
     Boolean isInstructor;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer")
+    @JsonBackReference
     ShoppingCart shoppingCart;
 
     @ManyToMany
+    @JsonBackReference
     Set<Course> ownedCourses;
 
     public Customer(String name,

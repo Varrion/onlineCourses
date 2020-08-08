@@ -20,7 +20,7 @@ export default function Courses(props) {
     return (
         <>
             <div className="row mt-4">
-                {courses ? courses.map((course, index) =>
+                {courses && courses.length ? courses.map((course, index) =>
                     <div key={index} className="col-md-3 mb-4">
                         <Card style={{minHeight: '250px'}} onClick={() => navigate(`courses/${course.id}`, {state: {loggedUser: props.loggedUser}})}>
                             <Card.Body>

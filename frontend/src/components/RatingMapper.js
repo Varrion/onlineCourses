@@ -9,7 +9,7 @@ const RatingMapper = (ratingName) => {
         case "NotBad":
             return Ratings.NotBad;
         case "Good":
-            return Ratings.Good.value();
+            return Ratings.Good;
         case "VeryGood":
             return Ratings.VeryGood;
         case "Perfect":

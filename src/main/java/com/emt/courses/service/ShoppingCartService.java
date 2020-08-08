@@ -1,17 +1,17 @@
 package com.emt.courses.service;
 
-import com.emt.courses.model.Course;
 import com.emt.courses.model.Customer;
 import com.emt.courses.model.ShoppingCart;
+import com.emt.courses.model.dto.CourseDto;
 
-import java.util.Set;
+import java.util.Optional;
 
 public interface ShoppingCartService {
     ShoppingCart createEmptyShoppingCart(Customer customer);
 
-    ShoppingCart getUserShoppingCart(int customerId);
+    Optional<ShoppingCart> getUserShoppingCart(int customerId);
 
-    ShoppingCart updateShoppingCart(int customerId, Set<Course> courses);
+    ShoppingCart updateShoppingCart(int customerId, CourseDto courseDto);
 
-    ShoppingCart buyCourseFromShoppingCart(int customerId, Course course);
+    ShoppingCart emptyCoursesFromShoppingCart(ShoppingCart shoppingCart);
 }

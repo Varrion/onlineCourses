@@ -1,17 +1,18 @@
 package com.emt.courses.model.dto;
 
-import com.emt.courses.model.CourseCategory;
-
 public class CourseDto {
-    Integer id;
 
-    String name;
+    public Integer id;
 
-    String description;
+    public String name;
 
-    Integer price;
+    public String description;
 
-    CourseCategory category;
+    public Integer price;
 
-    Boolean isFree;
+    public Integer categoryId;
+
+    public Boolean isFree;
+
+    public Integer instructorId;
 }

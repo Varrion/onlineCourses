@@ -1,12 +1,9 @@
 package com.emt.courses.controller;
 
-import com.emt.courses.model.Course;
-import com.emt.courses.model.CourseRating;
-import com.emt.courses.model.CourseVideo;
+import com.emt.courses.model.*;
+import com.emt.courses.model.dto.CourseDto;
 import com.emt.courses.model.dto.CourseRatingDto;
-import com.emt.courses.service.CourseRatingService;
-import com.emt.courses.service.CourseService;
-import com.emt.courses.service.CourseVideoService;
+import com.emt.courses.service.*;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,11 +19,15 @@ public class CourseController {
     private final CourseService courseService;
     private final CourseVideoService courseVideoService;
     private final CourseRatingService courseRatingService;
+    private final CustomerService customerService;
+    private final CourseCategoryService courseCategoryService;
 
-    public CourseController(CourseService courseService, CourseVideoService courseVideoService, CourseRatingService courseRatingService) {
+    public CourseController(CourseService courseService, CourseVideoService courseVideoService, CourseRatingService courseRatingService, CustomerService customerService, CourseCategoryService categoryService) {
         this.courseService = courseService;
         this.courseVideoService = courseVideoService;
         this.courseRatingService = courseRatingService;
+        this.customerService = customerService;
+        this.courseCategoryService = categoryService;
     }
 
     @GetMapping
@@ -35,7 +36,7 @@ public class CourseController {
         if (isFree.isPresent()) {
             return courseService.getAllFreeCourses(isFree.get());
         }
-        
+
         return courseService.getAllCourses();
     }
 
@@ -55,12 +56,20 @@ public class CourseController {
     }
 
     @PostMapping
-    Course saveCategory(@RequestBody Course course) {
-        return courseService.saveCourse(course);
+    Course saveCourse(@RequestBody CourseDto courseDto) {
+        Optional<Customer> optionalCustomer = customerService.getCustomer(courseDto.instructorId);
+        Optional<CourseCategory> optionalCourseCategory = courseCategoryService.getCategory(courseDto.categoryId);
+        if (optionalCourseCategory.isPresent() && optionalCustomer.isPresent()) {
+            CourseCategory category = optionalCourseCategory.get();
+            Customer instructor = optionalCustomer.get();
+            return courseService.saveCourse(courseDto, category, instructor);
+        }
+
+        return null;
     }
 
     @PutMapping
-    Course updateCategory(@RequestBody Course course) {
+    Course updateCourse(@RequestBody Course course) {
         return courseService.updateCourse(course);
     }
 
@@ -106,7 +115,12 @@ public class CourseController {
 
     @PostMapping("{courseId}/ratings")
     CourseRating postCourseRating(@PathVariable Integer courseId, @RequestBody CourseRatingDto courseRating) {
-        return courseRatingService.saveRating(courseRating, courseId);
+        Optional<Customer> optionalCustomer = customerService.getCustomer(courseRating.getCustomerId());
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            return courseRatingService.saveRating(courseRating, customer, courseId);
+        }
+        return null;
     }
 
     @PutMapping("{courseId}/ratings")
@@ -122,5 +136,16 @@ public class CourseController {
     @GetMapping("{courseId}/ratings/{ratingId}")
     Optional<CourseRating> getCourseRating(@PathVariable Integer courseId, @PathVariable Integer ratingId) {
         return courseRatingService.getCourseRating(ratingId);
+    }
+
+    //ShoppingCart
+    @GetMapping("cart/{customerId}")
+    List<Course> getCoursesInShoppingCart(@PathVariable Integer customerId) {
+        return courseService.getAllCoursesInShoppingCart(customerId);
+    }
+
+    @GetMapping("{courseId}/cart/{customerId}")
+    Optional<Course> getCourseByIdAndCustomerShoppingCart(@PathVariable Integer customerId, @PathVariable Integer courseId) {
+        return courseService.getCourseByCustomerShoppingCartAndId(customerId, courseId);
     }
 }

@@ -1,9 +1,12 @@
 package com.emt.courses.service.implementation;
 
+import com.emt.courses.model.Course;
 import com.emt.courses.model.Customer;
+import com.emt.courses.model.ShoppingCart;
 import com.emt.courses.model.dto.CustomerDto;
 import com.emt.courses.model.dto.LoginUserDto;
 import com.emt.courses.repository.CustomerRepository;
+import com.emt.courses.service.CourseService;
 import com.emt.courses.service.CustomerService;
 import com.emt.courses.service.ShoppingCartService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -14,19 +17,19 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final ShoppingCartService shoppingCartService;
+    private final CourseService courseService;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, ShoppingCartService shoppingCartService) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ShoppingCartService shoppingCartService, CourseService courseService) {
         this.customerRepository = customerRepository;
         this.shoppingCartService = shoppingCartService;
+        this.courseService = courseService;
     }
 
     @Override
@@ -121,5 +124,47 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomer(int customerId) {
         customerRepository.deleteById(customerId);
+    }
+
+    @Override
+    public void addFreeCourseToCollection(int courseId, int customerId) {
+        Optional<Course> optionalCourse = courseService.getCourse(courseId);
+
+        if (optionalCourse.isPresent()) {
+            Course course = optionalCourse.get();
+
+            if (course.getIsFree()) {
+                Set<Course> courseSet = new HashSet<>();
+
+                courseSet.add(course);
+                Optional<Customer> optionalCustomer = getCustomer(customerId);
+
+                Customer customer = optionalCustomer.get();
+                customer.setOwnedCourses(courseSet);
+                customerRepository.save(customer);
+            }
+        }
+    }
+
+    @Override
+    public boolean addCoursesToCollection(int customerId) {
+        Optional<ShoppingCart> optionalShoppingCart = shoppingCartService.getUserShoppingCart(customerId);
+        Optional<Customer> optionalCustomer = getCustomer(customerId);
+
+        if (optionalShoppingCart.isPresent() && optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            ShoppingCart shoppingCart = optionalShoppingCart.get();
+
+            Set<Course> courseSet = shoppingCart.getCourses();
+            customer.setOwnedCourses(courseSet);
+            shoppingCart.setCourses(null);
+
+            customerRepository.save(customer);
+            shoppingCartService.emptyCoursesFromShoppingCart(shoppingCart);
+
+            return true;
+        }
+
+        return false;
     }
 }
