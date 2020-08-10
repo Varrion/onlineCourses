@@ -115,7 +115,7 @@ function AddUpdateCourse(props) {
                         </Form.Group>
                     }
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="outline-primary" className={"rounded-content"} type="submit">
                         Submit
                     </Button>
                 </Form>

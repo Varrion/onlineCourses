@@ -99,7 +99,7 @@ public class StripeServiceImpl implements StripeService {
         try {
             Stripe.apiKey = API_SECRET_KEY;
             Map<String, Object> chargeParams = new HashMap<>();
-            chargeParams.put("amount", paymentRequest.getAmount());
+            chargeParams.put("amount", paymentRequest.getAmount() * 100);
             chargeParams.put("currency", "EUR");
             chargeParams.put("description", "Charge for " + paymentRequest.getEmail());
             chargeParams.put("source", paymentRequest.getToken());

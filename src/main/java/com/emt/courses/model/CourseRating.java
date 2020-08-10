@@ -1,6 +1,7 @@
 package com.emt.courses.model;
 
 import com.emt.courses.model.enums.Rating;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class CourseRating {
     Integer id;
 
     @ManyToOne
+    @JsonBackReference
     Course course;
 
     @Enumerated(EnumType.ORDINAL)

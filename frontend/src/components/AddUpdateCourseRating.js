@@ -53,7 +53,7 @@ export default function AddUpdateReactRating(props) {
                 <Form.Control value={rating.comment} onChange={handleChange("comment")} as="textarea"
                               rows="5"
                               placeholder="Add Comment for this course"/>
-                <Button className="float-right mt-3" variant="primary" type="submit">
+                <Button className="float-right mt-3 rounded-content" variant="outline-primary" type="submit">
                     Submit rating
                 </Button>
             </Form>

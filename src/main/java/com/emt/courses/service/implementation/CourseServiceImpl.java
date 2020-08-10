@@ -3,12 +3,14 @@ package com.emt.courses.service.implementation;
 import com.emt.courses.model.Course;
 import com.emt.courses.model.CourseCategory;
 import com.emt.courses.model.Customer;
+import com.emt.courses.model.ShoppingCart;
 import com.emt.courses.model.dto.CourseDto;
 import com.emt.courses.repository.CourseRepository;
 import com.emt.courses.service.CourseCategoryService;
 import com.emt.courses.service.CourseService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +31,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAllCoursesByInstructor(int instructorId) {
-        return courseRepository.getAllByInstructorId(instructorId);
+    public List<Course> getAllCoursesByInstructor(String instructorUsername) {
+        return courseRepository.getAllByInstructorUsername(instructorUsername);
     }
 
     @Override
@@ -98,6 +100,24 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(int courseId) {
-        courseRepository.deleteById(courseId);
+        Optional<Course> courseOptional = getCourse(courseId);
+        if (courseOptional.isPresent()) {
+            Course course = courseOptional.get();
+
+
+            for(Customer customer: course.getCustomers()) {
+                customer.getOwnedCourses().remove(course);
+            }
+
+            for(ShoppingCart shoppingCart: course.getShoppingCarts()) {
+                shoppingCart.getCourses().remove(course);
+            }
+            courseRepository.delete(course);
+        }
+    }
+
+    @Override
+    public Integer getAverageRatingForCourse(int courseId) {
+        return courseRepository.getAverageRatingForCourse(courseId);
     }
 }

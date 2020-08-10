@@ -11,7 +11,7 @@ public interface CourseService {
 
     List<Course> getAllCourses();
 
-    List<Course> getAllCoursesByInstructor(int instructorId);
+    List<Course> getAllCoursesByInstructor(String instructorUsername);
 
     List<Course> getAllOwnedCoursesForCustomer(Customer customer);
 
@@ -30,4 +30,6 @@ public interface CourseService {
     Course updateCourse(CourseDto courseDto);
 
     void deleteCourse(int courseId);
+
+    Integer getAverageRatingForCourse(int courseId);
 }

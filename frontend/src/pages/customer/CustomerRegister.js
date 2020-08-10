@@ -3,8 +3,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import axios from "./../../axiosConfig/axiosConfig"
-import {navigate} from "@reach/router";
 import Col from "react-bootstrap/Col";
+import {navigate} from "@reach/router";
 
 export default function CustomerRegister() {
 
@@ -45,7 +45,7 @@ export default function CustomerRegister() {
 
         axios.post("user", formData)
             .then(() => {
-                navigate("/");
+                navigate("/login");
                 setUserPhoto(null);
                 setUser(initialUser);
             })
@@ -55,7 +55,8 @@ export default function CustomerRegister() {
 
     return (
         <div className="text-left mt-4 offset-2 col-lg-8">
-            <Jumbotron>
+            <Jumbotron className={"rounded-content"}>
+                <h2 className="title-font mb-4">Register</h2>
                 <Form onSubmit={handleSubmit}>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formUserFirstName">
@@ -100,10 +101,11 @@ export default function CustomerRegister() {
                     <Form.Group>
                         <Form.File id="formCustomerPicture" onChange={handleDrop} label="Photo" />
                     </Form.Group>
-
-                    <Button variant="primary" type="submit">
-                        Register
-                    </Button>
+                    <div className="row justify-content-center">
+                        <Button className={"rounded-content"} variant="outline-primary" type="submit">
+                            Register
+                        </Button>
+                    </div>
                 </Form>
             </Jumbotron>
         </div>

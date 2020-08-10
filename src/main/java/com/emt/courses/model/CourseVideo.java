@@ -1,5 +1,6 @@
 package com.emt.courses.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class CourseVideo {
     String fileType;
 
     @ManyToOne
+    @JsonBackReference
     Course course;
 
     public CourseVideo(String title, String fileType, String fileName, Date uploadedOn) {

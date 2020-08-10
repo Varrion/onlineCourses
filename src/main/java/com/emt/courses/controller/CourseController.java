@@ -41,9 +41,9 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
-    @GetMapping("/instructor/{instructorId}")
-    List<Course> getAllCoursesByInstructor(@PathVariable Integer instructorId) {
-        return courseService.getAllCoursesByInstructor(instructorId);
+    @GetMapping("/instructor/{instructorUsername}")
+    List<Course> getAllCoursesByInstructor(@PathVariable String instructorUsername) {
+        return courseService.getAllCoursesByInstructor(instructorUsername);
     }
 
     @GetMapping("/{id}")
@@ -76,6 +76,11 @@ public class CourseController {
     @GetMapping("category/{categoryId}")
     List<Course> getAllCoursesByCategory(@PathVariable Integer categoryId) {
         return courseService.getAllCoursesByCategory(categoryId);
+    }
+
+    @GetMapping("{courseId}/rating")
+    Integer getAverageCourseRating(@PathVariable Integer courseId) {
+        return courseService.getAverageRatingForCourse(courseId);
     }
 
     //videos

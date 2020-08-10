@@ -9,22 +9,27 @@ import {showSmallDescription, showSmallTitle} from "../../components/TruncatedTe
 export default function CustomerInfo(props) {
 
     const [user, setUser] = useState(null);
-    const [ownedCourses, setOwnedCourses] = useState(null);
+    const [userCourses, setUserCourses] = useState(null);
 
     useEffect(() => {
         axios.get(`user/${props.username}`)
             .then(res => {
                 setUser(res.data);
+                if (!res.data.isInstructor) {
+                    axios.get(`user/${props.username}/owned-courses`)
+                        .then(res => {
+                            setUserCourses(res.data)
+                        })
+                        .catch(err => console.log(err))
+                } else {
+                    axios.get(`courses/instructor/${props.username}`)
+                        .then(res => {
+                            setUserCourses(res.data)
+                        })
+                        .catch(err => console.log(err))
+                }
             })
             .catch(err => console.log(err))
-
-        if (props.location.state.loggedUser) {
-            axios.get(`user/${props.location.state.loggedUser.id}/owned-courses`)
-                .then(res => {
-                    setOwnedCourses(res.data)
-                })
-                .catch(err => console.log(err))
-        }
     }, [props.location.state.loggedUser, props.username])
 
     return (
@@ -39,13 +44,13 @@ export default function CustomerInfo(props) {
                                       alt="user"
                                       width={380}
                                       height={500}
-                                      style={{padding:'15px'}}
+                                      style={{padding: '15px'}}
                                       className="rounded-content"/>
                         </div>
 
                         <div id="userDetails" className="height-inherit col-md-7 card-vertical-line flex-center-column">
                             <h4> {user.name + " " + user.surname}</h4>
-                            {user.isInstructor && <p><Badge variant="info" >Instructor</Badge></p>}
+                            {user.isInstructor && <p><Badge variant="info">Instructor</Badge></p>}
                             <p>
                                 <small><cite title="San Francisco, USA">Skopje, Macedonia <i
                                     className="fa fa-map-marker">
@@ -56,10 +61,12 @@ export default function CustomerInfo(props) {
                             <p><i className="far fa-calendar-alt"/> June 02, 1988</p>
                         </div>
                     </div>
-                    {!user.isInstructor && <Card.Footer>
-                        <Card.Title><h2 className="title-font">My Courses</h2></Card.Title>
+                    <Card.Footer>
+                        <Card.Title><h2
+                            className="title-font">{!user.isInstructor ? "My Courses" : "Instructor Courses"}</h2>
+                        </Card.Title>
                         <div className="row flex-nowrap horizontal-scrollable mb-5 height-inherit">
-                            {ownedCourses && ownedCourses.length ? ownedCourses.map((course, index) =>
+                            {userCourses && userCourses.length ? userCourses.map((course, index) =>
                                 <div className="col-md-5 mb-4 mt-1"
                                      key={index}>
                                     <CourseCard
@@ -73,7 +80,7 @@ export default function CustomerInfo(props) {
                                     />
                                 </div>) : <p>You dont have any courses yet.</p>}
                         </div>
-                    </Card.Footer>}
+                    </Card.Footer>
                 </Card>
             </div>}
         </div>)

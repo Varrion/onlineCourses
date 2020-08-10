@@ -63,8 +63,8 @@ export default function Category(props) {
                         <Card.Title className="title-font"> {category.name} <Badge pill variant={"light"}
                                                                                    className="pull-right">{courses && courses.length ? courses.length : 0}</Badge></Card.Title>
                         <p> {category.description}</p>
-                        <Button variant="outline-dark" className="rounded-content pull-right"
-                                onClick={() => setShowAddCourseModal(true)}>Add Course </Button>
+                        {props.loggedUser?.isInstructor && <Button variant="outline-dark" className="rounded-content pull-right"
+                                onClick={() => setShowAddCourseModal(true)}>Add Course </Button> }
                         <AddUpdateCourse loggedUser={props.loggedUser} showModal={showAddCourseModal}
                                          setShowModal={setShowAddCourseModal} category={category}/>
                     </Card.Body>

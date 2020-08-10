@@ -37,16 +37,16 @@ export default function CourseRatings(props) {
                         />
                         <div className="flex-space_between">
                             <p className="text-left">User: {rating.customer?.name}</p>
-                            {props.loggedUser.id === rating.customer?.id
+                            {props.loggedUser && props.loggedUser.id === rating.customer?.id
                             && <Button size="sm" variant="outline-secondary" onClick={deleteRating(rating.id)}
                                        className="text-right rounded-content">X</Button>}
                         </div>
                         <p className="text-left">Comment: {rating.comment}</p>
                     </div>
                 )
-                : <p>No ratings are available</p>}
+                : <p>No ratings are given yet</p>}
 
-            {props.loggedUser && !props.loggedUser.isInstructor
+            {props.loggedUser && !props.loggedUser.isInstructor && (props.isCourseOwned || props.course.isFree)
             && <>
                 <hr width="650" align="center"/>
                 <AddUpdateCourseRating loggedUser={props.loggedUser} course={props.course}/>

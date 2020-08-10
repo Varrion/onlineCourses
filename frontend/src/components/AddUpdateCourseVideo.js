@@ -64,7 +64,7 @@ function AddUpdateCourseVideo(props) {
 
                     <div className="row">
                         <div className="col-md-12">
-                            <Dropzone onDrop={acceptedFiles => handleDrop(acceptedFiles)}>
+                            <Dropzone accept={".webm"} onDrop={acceptedFiles => handleDrop(acceptedFiles)}>
                                 {({getRootProps, getInputProps}) => (
                                     <section className="custom_dropzone">
                                         <div {...getRootProps()}>
@@ -73,7 +73,7 @@ function AddUpdateCourseVideo(props) {
                                                 <div className="dropzone_text"><p>{courseVideo.video.path}</p>
                                                     <Button className="roundedButton" variant="danger" size="sm"
                                                             onClick={handleClearDropzone}>X</Button>
-                                                </div> : <p>Drag & drop your video here </p>}
+                                                </div> : <p>Drag & drop your .webm video file here </p>}
                                         </div>
                                     </section>
                                 )}
@@ -82,7 +82,7 @@ function AddUpdateCourseVideo(props) {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" type="submit">
+                    <Button variant="outline-primary" className={"rounded-content"} type="submit">
                         Submit
                     </Button>
                 </Modal.Footer>

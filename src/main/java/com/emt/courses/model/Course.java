@@ -26,6 +26,12 @@ public class Course {
 
     Integer price;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<CourseRating> courseRatings;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<CourseVideo> courseVideos;
+
     @ManyToOne
     CourseCategory category;
 
@@ -40,6 +46,7 @@ public class Course {
     Boolean isFree;
 
     @ManyToMany(mappedBy = "ownedCourses")
+    @JsonBackReference
     Set<Customer> customers;
 
     public Course(Integer id,

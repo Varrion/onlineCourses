@@ -37,7 +37,8 @@ export default function CustomerLogin(props) {
 
     return (
         <div className="text-left mt-4 offset-2 col-lg-8">
-            <Jumbotron>
+            <Jumbotron className={"rounded-content"}>
+                <h2 className="title-font mb-4">Login</h2>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formUsername">
                         <Form.Label>Username</Form.Label>
@@ -52,7 +53,7 @@ export default function CustomerLogin(props) {
                     </Form.Group>
 
                     <div className={"d-flex flex-column align-items-center"}>
-                        <Button variant="primary" type="submit" className={"text-center justify-content-center"}>
+                        <Button variant="outline-primary" type="submit" className={"rounded-content mb-3"}>
                             Login
                         </Button>
                         <p>Don't have an Account? <Link to={"/register"}> Register now </Link></p>

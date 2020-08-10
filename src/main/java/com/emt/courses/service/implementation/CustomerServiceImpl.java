@@ -155,8 +155,11 @@ public class CustomerServiceImpl implements CustomerService {
             Customer customer = optionalCustomer.get();
             ShoppingCart shoppingCart = optionalShoppingCart.get();
 
-            Set<Course> courseSet = shoppingCart.getCourses();
-            customer.setOwnedCourses(courseSet);
+            Set<Course> shoppingCartCourses = shoppingCart.getCourses();
+            Set<Course> ownedCourses = customer.getOwnedCourses();
+
+            ownedCourses.addAll(shoppingCartCourses);
+            customer.setOwnedCourses(ownedCourses);
             shoppingCart.setCourses(null);
 
             customerRepository.save(customer);

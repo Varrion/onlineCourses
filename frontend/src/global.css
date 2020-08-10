@@ -32,10 +32,27 @@
     background-color: #F0F8FF !important;
 }
 
+.flex-justify-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .flex-space_between {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+}
+
+.flex-content-end-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-start-column {
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .ratings-right {

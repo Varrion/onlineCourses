@@ -98,9 +98,9 @@ public class CustomerController {
                 : new ResponseEntity<String>("Please check your credit card informations", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("{customerId}/owned-courses")
-    public List<Course> getAllOwnedCourses(@PathVariable Integer customerId) {
-        Optional<Customer> optionalCustomer = customerService.getCustomer(customerId);
+    @GetMapping("{customerUsername}/owned-courses")
+    public List<Course> getAllOwnedCourses(@PathVariable String customerUsername) {
+        Optional<Customer> optionalCustomer = customerService.getCustomerByUsername(customerUsername);
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
             return courseService.getAllOwnedCoursesForCustomer(customer);

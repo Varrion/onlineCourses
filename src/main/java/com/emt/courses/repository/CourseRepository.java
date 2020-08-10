@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Transactional
-    List<Course> getAllByInstructorId(int instructorId);
+    List<Course> getAllByInstructorUsername(String instructorUsername);
 
     @Transactional
     List<Course> getAllByCategoryId(int categoryId);
@@ -40,4 +40,11 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "LEFT JOIN shopping_cart s on s.id = sc.shopping_carts_id\n" +
             "WHERE s.customer_id = ?1 AND c.id = ?2", nativeQuery = true)
     Optional<Course> getCourseByCustomerShoppingCartAndId(int customerId, int courseId);
+
+    @Transactional
+    @Query(value = "SELECT COALESCE(AVG(rating.rating), 0) FROM course c\n" +
+            "LEFT JOIN course_rating rating on c.id = rating.course_id\n" +
+            "WHERE c.id = ?1\n" +
+            "AND rating.rating IS NOT NULL", nativeQuery = true)
+    Integer getAverageRatingForCourse(int courseId);
 }
